@@ -27,6 +27,12 @@ class AppDatabase extends SQLiteOpenHelper {
         Log.d(TAG, "AppDatabase: constructor");
     }
 
+    /**
+     * Get an instance of the app's singleton database helper object
+     *
+     * @param context the content providers context
+     * @return a SQLite databse helper object
+     */
     static AppDatabase getInstance(Context context) {
         if (instance == null) {
             Log.d(TAG, "getInstance: creating new instance");
@@ -40,11 +46,11 @@ class AppDatabase extends SQLiteOpenHelper {
         Log.d(TAG, "onCreate: starts");
         String sSQL;    // Use a string variable to facilitate logging
         sSQL = "CREATE TABLE "
-                + TaskContract.TABLE_NAME + " ("
-                + TaskContract.Columns._ID + " INTEGER PRIMARY KEY NOT NULL, "
-                + TaskContract.Columns.TASKS_NAME + " TEXT NOT NULL, "
-                + TaskContract.Columns.TASKS_DESCRIPTION + " TEXT, "
-                + TaskContract.Columns.TASKS_SORT_ORDER + " INTEGER);";
+                + TasksContract.TABLE_NAME + " ("
+                + TasksContract.Columns._ID + " INTEGER PRIMARY KEY NOT NULL, "
+                + TasksContract.Columns.TASKS_NAME + " TEXT NOT NULL, "
+                + TasksContract.Columns.TASKS_DESCRIPTION + " TEXT, "
+                + TasksContract.Columns.TASKS_SORT_ORDER + " INTEGER);";
         Log.d(TAG, sSQL);
         db.execSQL(sSQL);
         Log.d(TAG, "onCreate: ends");
