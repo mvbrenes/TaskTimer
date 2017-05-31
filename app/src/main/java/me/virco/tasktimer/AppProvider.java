@@ -99,34 +99,159 @@ public class AppProvider extends ContentProvider {
 //                break;
 
             default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
+                throw new IllegalArgumentException("Unknown uri: " + uri);
         }
 
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-        Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
-        return null;
+        return queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
     }
 
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case TASKS:
+                return TasksContract.CONTENT_TYPE;
+            case TASKS_ID:
+                return TasksContract.CONTENT_ITEM_TYPE;
+//            case TIMINGS:
+//                return TimingsContract.CONTENT_TYPE;
+//            case TIMINGS_ID:
+//                return TimingsContract.CONTENT_ITEM_TYPE;
+//            case TASK_DURATIONS:
+//                return DurationsContract.CONTENT_TYPE;
+//            case TASK_DURATIONS_ID:
+//                return DurationsContract.CONTENT_ITEM_TYPE;
+            default:
+                throw new IllegalArgumentException("Unknown uri: " + uri);
+        }
     }
 
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+        Log.d(TAG, "insert: called with Uri: " + uri);
+        final int match = sUriMatcher.match(uri);
+        Log.d(TAG, "insert: match is: " + match);
+
+        final SQLiteDatabase db;
+        Uri returnUri;
+        long recordId;
+
+        switch (match) {
+            case TASKS:
+                db = mOpenHelper.getWritableDatabase();
+                recordId = db.insert(TasksContract.TABLE_NAME, null, values);
+                if (recordId > -1) {
+                    returnUri = TasksContract.buildTaskUri(recordId);
+                } else {
+                    throw new android.database.SQLException("Failed to insert into " + uri.toString());
+                }
+                break;
+//            case TIMINGS:
+//                db = mOpenHelper.getWritableDatabase();
+//                recordId = db.insert(TimingsContract.Timings.buildTimingUri(recordId));
+//                if (recordId > -1) {
+//                    returnUri = TimingsContract.Timings.buildTimingUri(recordId);
+//                } else {
+//                    throw new android.database.SQLException("Failed to insert into " + uri.toString());
+//                }
+//                break;
+            default:
+                throw new IllegalArgumentException("Unknown uri " + uri);
+        }
+        Log.d(TAG, "insert: Exiting, returning: " + returnUri);
+        return returnUri;
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        Log.d(TAG, "delete: called with uri " + uri);
+        final int match = sUriMatcher.match(uri);
+        Log.d(TAG, "delete: match is: " + match);
+
+        final SQLiteDatabase db;
+        int count;
+        String selectionCriteria;
+
+        switch (match) {
+            case TASKS:
+                db = mOpenHelper.getWritableDatabase();
+                count = db.delete(TasksContract.TABLE_NAME, selection, selectionArgs);
+                break;
+            case TASKS_ID:
+                db = mOpenHelper.getWritableDatabase();
+                long taskId = TasksContract.getTaskId(uri);
+                selectionCriteria = TasksContract.Columns._ID + " = " + taskId;
+                if (selection != null && selection.length() > 0) {
+                    selectionCriteria += "AND (" + selection + ")";
+                }
+                count = db.delete(TasksContract.TABLE_NAME, selectionCriteria, selectionArgs);
+                break;
+//            case TIMINGS:
+//                db = mOpenHelper.getWritableDatabase();
+//                count = db.delete(TimingsContract.TABLE_NAME, selection, selectionArgs);
+//                break;
+//            case TIMINGS_ID:
+//                db = mOpenHelper.getWritableDatabase();
+//                long taskId = TimingsContract.getTaskId(uri);
+//                selectionCriteria = TasksContract.Columns._ID + " = " + taskId;
+//                if (selection != null && selection.length() > 0) {
+//                    selectionCriteria += "AND (" + selection + ")";
+//                }
+//                count = db.delete(TimingsContract.TABLE_NAME, selectionCriteria, selectionArgs);
+//                break;
+            default:
+                throw new IllegalArgumentException("Unknown uri: " + uri);
+        }
+        Log.d(TAG, "delete: returning: " + count);
+        return count;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
                       @Nullable String[] selectionArgs) {
-        return 0;
+
+        Log.d(TAG, "update: called with uri " + uri);
+        final int match = sUriMatcher.match(uri);
+        Log.d(TAG, "update: match is: " + match);
+
+        final SQLiteDatabase db;
+        int count;
+        String selectionCriteria;
+
+        switch (match) {
+            case TASKS:
+                db = mOpenHelper.getWritableDatabase();
+                count = db.update(TasksContract.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case TASKS_ID:
+                db = mOpenHelper.getWritableDatabase();
+                long taskId = TasksContract.getTaskId(uri);
+                selectionCriteria = TasksContract.Columns._ID + " = " + taskId;
+                if (selection != null && selection.length() > 0) {
+                    selectionCriteria += "AND (" + selection + ")";
+                }
+                count = db.update(TasksContract.TABLE_NAME, values, selectionCriteria, selectionArgs);
+                break;
+//            case TIMINGS:
+//                db = mOpenHelper.getWritableDatabase();
+//                count = db.update(TimingsContract.TABLE_NAME, values, selection, selectionArgs);
+//                break;
+//            case TIMINGS_ID:
+//                db = mOpenHelper.getWritableDatabase();
+//                long taskId = TimingsContract.getTaskId(uri);
+//                selectionCriteria = TasksContract.Columns._ID + " = " + taskId;
+//                if (selection != null && selection.length() > 0) {
+//                    selectionCriteria += "AND (" + selection + ")";
+//                }
+//                count = db.update(TimingsContract.TABLE_NAME, values, selectionCriteria, selectionArgs);
+//                break;
+            default:
+                throw new IllegalArgumentException("Unknown uri: " + uri);
+        }
+        Log.d(TAG, "update: returning: " + count);
+        return count;
     }
 }
