@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_add_edit"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="me.virco.tasktimer.AddEditActivityFragment"
+    tools:showIn="@layout/activity_add_edit">
+
+    <EditText
+        android:id="@+id/addedit_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/addedit_name_hint"
+        android:inputType="textNoSuggestions"
+        android:maxLength="64" />
+
+    <EditText
+        android:id="@+id/addedit_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/addedit_desciption_hint"
+        android:inputType="textMultiLine"
+        android:maxLength="256" />
+
+    <EditText
+        android:id="@+id/addedit_sortorder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/addedit_sort_hint"
+        android:inputType="number"
+        android:maxLength="9" />
+
+    <Button
+        android:id="@+id/addedit_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:drawableLeft="@android:drawable/ic_menu_save"
+        android:drawableStart="@android:drawable/ic_menu_save"
+        android:text="@string/addedit_save_text" />
+</LinearLayout>
