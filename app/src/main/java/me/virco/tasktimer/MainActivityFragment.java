@@ -43,7 +43,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.task_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new CursorRecyclerViewAdapter(null);
+        mAdapter = new CursorRecyclerViewAdapter(null, (CursorRecyclerViewAdapter.OnTaskClickListerner) getActivity());
         recyclerView.setAdapter(mAdapter);
         return view;
     }
@@ -53,7 +53,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         Log.d(TAG, "onCreateLoader: starts with id: " + id);
         String[] projection = {TasksContract.Columns._ID, TasksContract.Columns.TASKS_NAME,
                 TasksContract.Columns.TASKS_DESCRIPTION, TasksContract.Columns.TASKS_SORT_ORDER};
-        String sortOrder = TasksContract.Columns.TASKS_SORT_ORDER + "," + TasksContract.Columns.TASKS_NAME;
+        // <order by> Task.SortOrder, Task.Name COLLATE NOCASE
+        String sortOrder = TasksContract.Columns.TASKS_SORT_ORDER + "," + TasksContract.Columns.TASKS_NAME + " COLLATE NOCASE";
         switch (id) {
             case LOADER_ID:
                 return new CursorLoader(getActivity(),

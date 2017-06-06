@@ -16,10 +16,16 @@ import android.widget.TextView;
 class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewAdapter.TaskViewHolder> {
     private static final String TAG = "CursorRecyclerViewAdapt";
     private Cursor mCursor;
+    private OnTaskClickListerner mListener;
 
-    public CursorRecyclerViewAdapter(Cursor cursor) {
-        Log.d(TAG, "CursorRecyclerViewAdapter: Constructor called");
+    interface OnTaskClickListerner {
+        void onEditClick(Task task);
+        void onDeleteClick(Task taks);
+    }
+
+    public CursorRecyclerViewAdapter(Cursor cursor, OnTaskClickListerner listerner) {
         mCursor = cursor;
+        mListener = listerner;
     }
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -32,7 +38,6 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
 
         public TaskViewHolder(View itemView) {
             super(itemView);
-            Log.d(TAG, "TaskViewHolder: starts");
             this.name = (TextView) itemView.findViewById(R.id.tli_name);
             this.description = (TextView) itemView.findViewById(R.id.tli_description);
             this.editButton = (ImageButton) itemView.findViewById(R.id.tli_edit);
@@ -42,16 +47,13 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
 
     @Override
     public CursorRecyclerViewAdapter.TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "onCreateViewHolder: starts");
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_list_item, parent, false);
         return new TaskViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(CursorRecyclerViewAdapter.TaskViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder: starts");
         if (mCursor == null || mCursor.getCount() == 0 ) {
-            Log.d(TAG, "onBindViewHolder: providing instructions");
             holder.name.setText(R.string.instructions_heading);
             holder.description.setText(R.string.instructions);
             holder.editButton.setVisibility(View.GONE);
@@ -60,16 +62,45 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
             if (!mCursor.moveToPosition(position)) {
                 throw new IllegalStateException("Couldn't move cursor to position " + position);
             }
-            holder.name.setText(mCursor.getString(mCursor.getColumnIndex(TasksContract.Columns.TASKS_NAME)));
-            holder.description.setText(mCursor.getString(mCursor.getColumnIndex(TasksContract.Columns.TASKS_DESCRIPTION)));
+
+            final Task task = new Task(mCursor.getLong(mCursor.getColumnIndex(TasksContract.Columns._ID)),
+                    mCursor.getString(mCursor.getColumnIndex(TasksContract.Columns.TASKS_NAME)),
+                    mCursor.getString(mCursor.getColumnIndex(TasksContract.Columns.TASKS_DESCRIPTION)),
+                    mCursor.getInt(mCursor.getColumnIndex(TasksContract.Columns.TASKS_SORT_ORDER)));
+
+            holder.name.setText(task.getName());
+            holder.description.setText(task.getDescription());
             holder.editButton.setVisibility(View.VISIBLE); // TODO add onClick listener
             holder.deleteButton.setVisibility(View.VISIBLE); // TODO add onClick listener
+
+            View.OnClickListener buttonOnClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (v.getId()) {
+                        case R.id.tli_edit:
+                            if (mListener != null) {
+
+                                mListener.onEditClick(task);
+                            }
+                            break;
+                        case R.id.tli_delete:
+                            if (mListener != null) {
+                                mListener.onDeleteClick(task);
+                            }
+                            break;
+                        default:
+                            Log.e(TAG, "onClick: onclick: found unexpected button id");
+                    }
+                }
+            };
+
+            holder.editButton.setOnClickListener(buttonOnClickListener);
+            holder.deleteButton.setOnClickListener(buttonOnClickListener);
         }
     }
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "getItemCount: starts");
         if (mCursor == null || mCursor.getCount() == 0) {
             return 1; // fib, because we populate a single ViewHolder with instructions
         } else {

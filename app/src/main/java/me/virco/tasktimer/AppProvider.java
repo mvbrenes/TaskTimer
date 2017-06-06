@@ -103,7 +103,10 @@ public class AppProvider extends ContentProvider {
         }
 
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-        return queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+        Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+        Log.d(TAG, "query: rows in returned cursor = " + cursor.getCount()); // TODO remove this line
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
     }
 
     @Nullable
@@ -161,6 +164,13 @@ public class AppProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown uri " + uri);
         }
+        if (recordId > -1) {
+            // something was inserted
+            Log.d(TAG, "insert: Setting notifyChanged with " + uri);
+            getContext().getContentResolver().notifyChange(uri, null);
+        } else {
+            Log.d(TAG, "insert: nothing inserted");
+        }
         Log.d(TAG, "insert: Exiting, returning: " + returnUri);
         return returnUri;
     }
@@ -204,6 +214,13 @@ public class AppProvider extends ContentProvider {
 //                break;
             default:
                 throw new IllegalArgumentException("Unknown uri: " + uri);
+        }
+        if (count > 0) {
+            // something was deleted
+            Log.d(TAG, "delete: Setting notifyChanged with " + uri);
+            getContext().getContentResolver().notifyChange(uri, null);
+        } else {
+            Log.d(TAG, "delete: nothing deleted");
         }
         Log.d(TAG, "delete: returning: " + count);
         return count;
@@ -250,6 +267,13 @@ public class AppProvider extends ContentProvider {
 //                break;
             default:
                 throw new IllegalArgumentException("Unknown uri: " + uri);
+        }
+        if (count > 0) {
+            // something was deleted
+            Log.d(TAG, "update: Setting notifyChanged with " + uri);
+            getContext().getContentResolver().notifyChange(uri, null);
+        } else {
+            Log.d(TAG, "update: nothing deleted");
         }
         Log.d(TAG, "update: returning: " + count);
         return count;

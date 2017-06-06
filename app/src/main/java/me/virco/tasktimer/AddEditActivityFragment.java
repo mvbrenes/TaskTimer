@@ -49,7 +49,7 @@ public class AddEditActivityFragment extends Fragment {
                 Log.d(TAG, "onCreateView: Task details found, editing...");
                 mNameTextView.setText(task.getName());
                 mDescriptionEditText.setText(task.getDescription());
-                mSortOrderEditText.setText(task.getSortOrder());
+                mSortOrderEditText.setText(String.valueOf(task.getSortOrder()));
                 mMode = FragmentEditMode.EDIT;
             } else {
                 // No Task, add a new task, don't edit the existing one
