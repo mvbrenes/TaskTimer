@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +19,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements CursorRecyclerViewAdapter.OnTaskClickListerner{
+public class MainActivity extends AppCompatActivity
+        implements CursorRecyclerViewAdapter.OnTaskClickListerner, AddEditActivityFragment.OnSaveClicked{
     private static final String TAG = "MainActivity";
 
     // Whether or not the activity is in 2-pane mode
@@ -84,10 +86,10 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
             arguments.putSerializable(Task.class.getSimpleName(), task);
             fragment.setArguments(arguments);
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.task_details_container, fragment);
-            fragmentTransaction.commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.task_details_container, fragment)
+                    .commit();
 
         } else {
             Log.d(TAG, "taskEditRequest: in single-pane mode (phone)");
@@ -110,5 +112,17 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
     @Override
     public void onDeleteClick(Task task) {
         getContentResolver().delete(TasksContract.buildTaskUri(task.get_Id()), null, null);
+    }
+
+    @Override
+    public void onSaveClicked() {
+        Log.d(TAG, "onSaveClicked: starts");
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.task_details_container);
+        if (fragment != null) {
+            fragmentManager.beginTransaction()
+                    .remove(fragment)
+                    .commit();
+        }
     }
 }

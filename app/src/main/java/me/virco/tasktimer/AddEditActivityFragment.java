@@ -2,9 +2,9 @@ package me.virco.tasktimer;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,10 +24,32 @@ public class AddEditActivityFragment extends Fragment {
     private EditText mDescriptionEditText;
     private EditText mSortOrderEditText;
     private Button mSaveButton;
+    private OnSaveClicked mSaveListener = null;
 
+    interface OnSaveClicked {
+        void onSaveClicked();
+    }
 
     public AddEditActivityFragment() {
         Log.d(TAG, "AddEditActivityFragment: constructor called");
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        Log.d(TAG, "onAttach: starts");
+        super.onAttach(context);
+        try {
+            mSaveListener = (OnSaveClicked) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnSaveClicked interface");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d(TAG, "onDetach: starts");
+        super.onDetach();
+        mSaveListener = null;
     }
 
     @Override
@@ -104,6 +126,10 @@ public class AddEditActivityFragment extends Fragment {
                         break;
                 }
                 Log.d(TAG, "onClick: Done editing");
+
+                if (mSaveListener != null) {
+                    mSaveListener.onSaveClicked();
+                }
             }
         });
         Log.d(TAG, "onCreateView: Exiting...");
