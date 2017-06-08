@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:weightSum="2"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <fragment
@@ -11,6 +13,14 @@
         android:name="me.virco.tasktimer.MainActivityFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         tools:layout="@layout/fragment_main" />
-</LinearLayout>
 
+    <FrameLayout
+        android:id="@+id/task_details_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+    </FrameLayout>
+</LinearLayout>

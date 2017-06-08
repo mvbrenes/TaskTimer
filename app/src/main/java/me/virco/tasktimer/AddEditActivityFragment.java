@@ -40,7 +40,9 @@ public class AddEditActivityFragment extends Fragment {
         mSortOrderEditText = (EditText) view.findViewById(R.id.addedit_sortorder);
         mSaveButton = (Button) view.findViewById(R.id.addedit_save);
 
-        Bundle arguments = getActivity().getIntent().getExtras();
+//        Bundle arguments = getActivity().getIntent().getExtras();
+        Bundle arguments = getArguments();
+
         final Task task;
         if (arguments != null) {
             Log.d(TAG, "onCreateView: retrieving task details");
@@ -80,7 +82,7 @@ public class AddEditActivityFragment extends Fragment {
                         if (!mNameTextView.getText().toString().equals(task.getName())) {
                             contentValues.put(TasksContract.Columns.TASKS_NAME, mNameTextView.getText().toString());
                         }
-                        if (mDescriptionEditText.getText().toString().equals(task.getDescription())) {
+                        if (!mDescriptionEditText.getText().toString().equals(task.getDescription())) {
                             contentValues.put(TasksContract.Columns.TASKS_DESCRIPTION, mDescriptionEditText.getText().toString());
                         }
                         if (so != task.getSortOrder()) {
