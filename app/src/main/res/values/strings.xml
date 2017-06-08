@@ -19,4 +19,6 @@
         \n\nTasks with lower sort orders will be placed higher in the list.Tasks with the same sort
         order will be sorted alphabetically.\n\nTapping a task will start the timer for that task
         (and will stop the timer for any previous task that was being timed).</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>
