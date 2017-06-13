@@ -21,4 +21,9 @@
         (and will stop the timer for any previous task that was being timed).</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="deldialog_positive_caption">Delete</string>
+    <string name="deldialog_message">Deleting will also delete all timing data associated with Task ID %1$d: %2$s.</string>
+    <string name="cancelEditDialog_message">You have unsaved changes. Do you want to abandon, or continue to edit?</string>
+    <string name="cancelEditDialog_positive_caption">Continue</string>
+    <string name="cancelEditDialog_negative_caption">Abandon</string>
 </resources>

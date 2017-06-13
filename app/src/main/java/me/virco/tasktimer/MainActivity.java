@@ -1,32 +1,27 @@
 package me.virco.tasktimer;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
-        implements CursorRecyclerViewAdapter.OnTaskClickListerner, AddEditActivityFragment.OnSaveClicked{
+        implements
+        CursorRecyclerViewAdapter.OnTaskClickListerner,
+        AddEditActivityFragment.OnSaveClicked,
+        AppDialog.DialogEvents {
     private static final String TAG = "MainActivity";
 
     // Whether or not the activity is in 2-pane mode
     // i.e.running in landscape on a tablet
     private boolean mTwoPane = false;
-    private static String ADD_EDIT_FRAGMENT = "AddEditFragment";
+    public static final int DIALOG_DELETE_ID = 1;
+    public static final int DIALOG_CANCEL_EDIT_ID = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +106,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDeleteClick(Task task) {
-        getContentResolver().delete(TasksContract.buildTaskUri(task.get_Id()), null, null);
+        Log.d(TAG, "onDeleteClick: starts");
+        AppDialog dialog = new AppDialog();
+        Bundle args = new Bundle();
+        args.putInt(AppDialog.DIALOG_ID, DIALOG_DELETE_ID);
+        args.putString(AppDialog.DIALOG_MESSAGE, getString(R.string.deldialog_message, task.get_Id(), task.getName()));
+        args.putInt(AppDialog.DIALOG_POSITIVE_RID, R.string.deldialog_positive_caption);
+        args.putLong("TaskId", task.get_Id());
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), null);
     }
 
     @Override
@@ -123,6 +126,62 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.beginTransaction()
                     .remove(fragment)
                     .commit();
+        }
+    }
+
+    @Override
+    public void onPositiveDialogResult(int dialogId, Bundle args) {
+        Log.d(TAG, "onPositiveDialogResult: called");
+        switch (dialogId) {
+            case DIALOG_DELETE_ID:
+                long taskId = args.getLong("TaskId");
+                if (BuildConfig.DEBUG && taskId == 0) throw new AssertionError("Task ID is zero");
+                getContentResolver().delete(TasksContract.buildTaskUri(taskId), null, null);
+                break;
+            case DIALOG_CANCEL_EDIT_ID:
+                // no action required
+                break;
+        }
+
+    }
+
+    @Override
+    public void onNegativeDialogResult(int dialogId, Bundle args) {
+        Log.d(TAG, "onNegativeDialogResult: called");
+        switch (dialogId) {
+            case DIALOG_DELETE_ID:
+                // No action required
+                break;
+            case DIALOG_CANCEL_EDIT_ID:
+                finish();
+                break;
+        }
+    }
+
+    @Override
+    public void onDialogCancelled(int dialogId) {
+        Log.d(TAG, "onDialogCancelled: called");
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed: called");
+//        super.onBackPressed();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AddEditActivityFragment fragment = (AddEditActivityFragment) fragmentManager
+                .findFragmentById(R.id.task_details_container);
+        if (fragment == null || fragment.canClose()) {
+            super.onBackPressed();
+        } else {
+            // show dialog to get confirmation to quit editing
+            AppDialog dialog = new AppDialog();
+            Bundle args = new Bundle();
+            args.putInt(AppDialog.DIALOG_ID, DIALOG_CANCEL_EDIT_ID);
+            args.putString(AppDialog.DIALOG_MESSAGE, getString(R.string.cancelEditDialog_message));
+            args.putInt(AppDialog.DIALOG_POSITIVE_RID, R.string.cancelEditDialog_positive_caption);
+            args.putInt(AppDialog.DIALOG_NEGATIVE_RID, R.string.cancelEditDialog_negative_caption);
+            dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), null);
         }
     }
 }

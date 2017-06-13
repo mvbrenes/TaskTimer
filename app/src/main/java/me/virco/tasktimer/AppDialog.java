@@ -27,7 +27,7 @@ public class AppDialog extends DialogFragment {
     interface DialogEvents {
         void onPositiveDialogResult(int dialogId, Bundle args);
         void onNegativeDialogResult(int dialogId, Bundle args);
-        void onDialogCancelled(int dialogId, Bundle args);
+        void onDialogCancelled(int dialogId);
     }
 
     private DialogEvents mDialogEvents;
@@ -78,6 +78,8 @@ public class AppDialog extends DialogFragment {
             if (negativeStringId == 0) {
                 negativeStringId = R.string.cancel;
             }
+        } else {
+            throw new IllegalArgumentException("Must pass DIALOG_ID and DIALOG_MESSAGE in the bundle");
         }
 
         builder.setMessage(messageString)
@@ -85,27 +87,30 @@ public class AppDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // callback positive result method
-                mDialogEvents.onPositiveDialogResult(dialogId, arguments);
+                if (mDialogEvents != null) {
+                    mDialogEvents.onPositiveDialogResult(dialogId, arguments);
+                }
             }
         })
                 .setNegativeButton(negativeStringId, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // callback negative result method
-                mDialogEvents.onNegativeDialogResult(dialogId, arguments);
+                if (mDialogEvents != null) {
+                    mDialogEvents.onNegativeDialogResult(dialogId, arguments);
+                }
             }
         });
 
-        return super.onCreateDialog(savedInstanceState);
+        return builder.create();
     }
 
     @Override
     public void onCancel(DialogInterface dialog) {
         Log.d(TAG, "onCancel: ");
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        Log.d(TAG, "onDismiss: ");
+        if (mDialogEvents != null) {
+            int dialogId = getArguments().getInt(DIALOG_ID);
+            mDialogEvents.onDialogCancelled(dialogId);
+        }
     }
 }
