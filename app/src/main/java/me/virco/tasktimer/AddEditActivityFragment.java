@@ -139,4 +139,12 @@ public class AddEditActivityFragment extends Fragment {
         Log.d(TAG, "onCreateView: Exiting...");
         return view;
     }
+
+    public EditText getNameTextView() {
+        return mNameTextView;
+    }
+
+    public EditText getDescriptionEditText() {
+        return mDescriptionEditText;
+    }
 }

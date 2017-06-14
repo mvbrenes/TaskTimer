@@ -26,4 +26,8 @@
     <string name="cancelEditDialog_message">You have unsaved changes. Do you want to abandon, or continue to edit?</string>
     <string name="cancelEditDialog_positive_caption">Continue</string>
     <string name="cancelEditDialog_negative_caption">Abandon</string>
+    <string name="about_copyright">Copyright \u00a9 2017 LearnProgramming.academy</string>
+    <string name="about_weblink">Instructions available at www.learnprogramming.academy</string>
+    <string name="about_email">For support, email tasktimer@learnprogramming.academy</string>
+    <string name="about_credits">Icon derived from <b>analog clock</b> at openclipart.org <b>Anonymous</b></string>
 </resources>
