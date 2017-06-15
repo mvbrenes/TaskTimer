@@ -8,19 +8,20 @@ import static me.virco.tasktimer.AppProvider.CONTENT_AUTHORITY;
 import static me.virco.tasktimer.AppProvider.CONTENT_AUTHORITY_URI;
 
 /**
+ *
  * Created by mvbrenes on 5/24/17.
  */
 
-public class TasksContract {
+class TasksContract {
 
     static final String TABLE_NAME = "Tasks";
 
     // Tasks fields
-    public static class Columns {
-        public static final String _ID = BaseColumns._ID;
-        public static final String TASKS_NAME = "Name";
-        public static final String TASKS_DESCRIPTION = "Description";
-        public static final String TASKS_SORT_ORDER = "SortOrder";
+    static class Columns {
+        static final String _ID = BaseColumns._ID;
+        static final String TASKS_NAME = "Name";
+        static final String TASKS_DESCRIPTION = "Description";
+        static final String TASKS_SORT_ORDER = "SortOrder";
 
         private Columns() {
             //  private constructor to prevent initialization
@@ -30,7 +31,7 @@ public class TasksContract {
     /**
      * The URI to access the Tasks table
      */
-    public static final Uri CONTENT_URI  = Uri.withAppendedPath(
+    static final Uri CONTENT_URI  = Uri.withAppendedPath(
             CONTENT_AUTHORITY_URI, TABLE_NAME);
 
     static final String CONTENT_TYPE = "vnd.android.dir/vnd." + CONTENT_AUTHORITY + "." + TABLE_NAME;

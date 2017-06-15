@@ -16,8 +16,8 @@ import android.util.Log;
 class AppDatabase extends SQLiteOpenHelper {
     private static final String TAG = "AppDatabase";
 
-    public static final String DATABASE_NAME = "TaskTimer.db";
-    public static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "TaskTimer.db";
+    private static final int DATABASE_VERSION = 1;
 
     // Implement AppDatabase as a Singleton
     private static AppDatabase instance = null;

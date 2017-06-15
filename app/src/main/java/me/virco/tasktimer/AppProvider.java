@@ -2,6 +2,7 @@ package me.virco.tasktimer;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -38,6 +39,8 @@ public class AppProvider extends ContentProvider {
     private static final int TASK_DURATIONS = 400;
     private static final int TASK_DURATIONS_ID = 401;
 
+    private Context mContext;
+
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -56,7 +59,8 @@ public class AppProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mOpenHelper = AppDatabase.getInstance(getContext());
+        mContext = getContext();
+        mOpenHelper = AppDatabase.getInstance(mContext);
         return true;
     }
 
@@ -105,7 +109,7 @@ public class AppProvider extends ContentProvider {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
         Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
         Log.d(TAG, "query: rows in returned cursor = " + cursor.getCount()); // TODO remove this line
-        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        cursor.setNotificationUri(mContext.getContentResolver(), uri);
         return cursor;
     }
 
@@ -167,7 +171,8 @@ public class AppProvider extends ContentProvider {
         if (recordId > -1) {
             // something was inserted
             Log.d(TAG, "insert: Setting notifyChanged with " + uri);
-            getContext().getContentResolver().notifyChange(uri, null);
+            mContext.getContentResolver().notifyChange(uri, null);
+
         } else {
             Log.d(TAG, "insert: nothing inserted");
         }
@@ -218,7 +223,7 @@ public class AppProvider extends ContentProvider {
         if (count > 0) {
             // something was deleted
             Log.d(TAG, "delete: Setting notifyChanged with " + uri);
-            getContext().getContentResolver().notifyChange(uri, null);
+           mContext.getContentResolver().notifyChange(uri, null);
         } else {
             Log.d(TAG, "delete: nothing deleted");
         }
@@ -271,7 +276,9 @@ public class AppProvider extends ContentProvider {
         if (count > 0) {
             // something was deleted
             Log.d(TAG, "update: Setting notifyChanged with " + uri);
-            getContext().getContentResolver().notifyChange(uri, null);
+
+            mContext.getContentResolver().notifyChange(uri, null);
+
         } else {
             Log.d(TAG, "update: nothing deleted");
         }

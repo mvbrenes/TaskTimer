@@ -27,7 +27,9 @@
     <string name="cancelEditDialog_positive_caption">Continue</string>
     <string name="cancelEditDialog_negative_caption">Abandon</string>
     <string name="about_copyright">Copyright \u00a9 2017 LearnProgramming.academy</string>
-    <string name="about_weblink">Instructions available at www.learnprogramming.academy</string>
+    <string name="about_weblink_21">Instructions available at www.learnprogramming.academy</string>
+    <string name="about_weblink">Instructions available </string>
+    <string name="about_url"><u>https://www.learnprogramming.academy</u></string>
     <string name="about_email">For support, email tasktimer@learnprogramming.academy</string>
     <string name="about_credits">Icon derived from <b>analog clock</b> at openclipart.org <b>Anonymous</b></string>
 </resources>

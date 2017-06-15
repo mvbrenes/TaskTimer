@@ -1,16 +1,11 @@
 package me.virco.tasktimer;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 
 public class AddEditActivity extends AppCompatActivity implements AddEditActivityFragment.OnSaveClicked,
 AppDialog.DialogEvents {
@@ -23,8 +18,11 @@ AppDialog.DialogEvents {
         setContentView(R.layout.activity_add_edit);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         mFragment = new AddEditActivityFragment();
 
@@ -90,7 +88,6 @@ AppDialog.DialogEvents {
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed: called");
-        EditText editText = (EditText) findViewById(R.id.addedit_name);
         if (mFragment.canClose()) {
             super.onBackPressed();
         } else {

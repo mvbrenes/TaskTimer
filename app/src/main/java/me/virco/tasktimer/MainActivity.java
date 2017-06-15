@@ -1,14 +1,22 @@
 package me.virco.tasktimer;
 
+import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements
@@ -22,6 +30,8 @@ public class MainActivity extends AppCompatActivity
     private boolean mTwoPane = false;
     public static final int DIALOG_DELETE_ID = 1;
     public static final int DIALOG_CANCEL_EDIT_ID = 2;
+
+    private AlertDialog mAlertDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +73,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.menumain_settings:
                 break;
             case R.id.menumain_showAbout:
+                showAboutDialog();
                 break;
             case R.id.menumain_generate:
                 break;
@@ -70,6 +81,84 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+    @SuppressLint("SetTextI18n")
+    public void showAboutDialog() {
+        @SuppressLint("InflateParams") View messageView = getLayoutInflater().inflate(R.layout.about, null, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.app_name);
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setView(messageView);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (mAlertDialog != null && mAlertDialog.isShowing()) {
+                    mAlertDialog.dismiss();
+                }
+            }
+        });
+
+        mAlertDialog = builder.create();
+        mAlertDialog.setCanceledOnTouchOutside(true);
+
+//        builder.setTitle(R.string.app_name);
+//        builder.setIcon(R.mipmap.ic_launcher);
+//        messageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d(TAG, "onClick: messageView.onClick, showing = " + mAlertDialog.isShowing());
+//                if (mAlertDialog != null && mAlertDialog.isShowing()) {
+//                    mAlertDialog.dismiss();
+//                }
+//            }
+//        });
+
+        TextView textView = messageView.findViewById(R.id.about_version);
+        textView.setText("v" + BuildConfig.VERSION_NAME);
+
+        TextView about_urlTextView = messageView.findViewById(R.id.about_url);
+        if (about_urlTextView != null) {
+            about_urlTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    String s = ((TextView) view).getText().toString();
+                    intent.setData(Uri.parse(s));
+                    try {
+                        startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(MainActivity.this, "No browser application found, or URL not valid", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+        mAlertDialog.show();
+    }
+//    @SuppressLint("SetTextI18n")
+//    public void showAboutDialog() {
+//        @SuppressLint("InflateParams") View messageView = getLayoutInflater().inflate(R.layout.about, null, false);
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle(R.string.app_name);
+//        builder.setIcon(R.mipmap.ic_launcher);
+//        builder.setView(messageView);
+//        mAlertDialog = builder.create();
+//        mAlertDialog.setCanceledOnTouchOutside(true);
+////        builder.setTitle(R.string.app_name);
+////        builder.setIcon(R.mipmap.ic_launcher);
+//        messageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d(TAG, "onClick: messageView.onClick, showing = " + mAlertDialog.isShowing());
+//                if (mAlertDialog != null && mAlertDialog.isShowing()) {
+//                    mAlertDialog.dismiss();
+//                }
+//            }
+//        });
+//        TextView textView = (TextView) messageView.findViewById(R.id.about_version);
+//        textView.setText("v" + BuildConfig.VERSION_NAME);
+//        mAlertDialog.show();
+//    }
 
     private void taskEditRequest(Task task) {
         Log.d(TAG, "taskEditRequest: starts");
@@ -182,6 +271,14 @@ public class MainActivity extends AppCompatActivity
             args.putInt(AppDialog.DIALOG_NEGATIVE_RID, R.string.cancelEditDialog_negative_caption);
             dialog.setArguments(args);
             dialog.show(getSupportFragmentManager(), null);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAlertDialog != null && mAlertDialog.isShowing()) {
+            mAlertDialog.dismiss();
         }
     }
 }

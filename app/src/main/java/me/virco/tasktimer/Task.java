@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Created by marco on 6/4/2017.
+ *
  */
 
 class Task implements Serializable {
@@ -14,14 +15,14 @@ class Task implements Serializable {
     private final String mDescription;
     private final int mSortOrder;
 
-    public Task(long id, String name, String description, int sortOrder) {
+    Task(long id, String name, String description, int sortOrder) {
         this.m_Id = id;
         mName = name;
         mDescription = description;
         mSortOrder = sortOrder;
     }
 
-    public long get_Id() {
+    long get_Id() {
         return m_Id;
     }
 
@@ -29,11 +30,11 @@ class Task implements Serializable {
         return mName;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return mDescription;
     }
 
-    public int getSortOrder() {
+    int getSortOrder() {
         return mSortOrder;
     }
 

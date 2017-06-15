@@ -3,8 +3,8 @@ package me.virco.tasktimer;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +18,11 @@ import android.widget.EditText;
 public class AddEditActivityFragment extends Fragment {
     private static final String TAG = "AddEditActivityFragment";
 
-    public enum FragmentEditMode {EDIT, ADD}
+    private enum FragmentEditMode {EDIT, ADD}
     private FragmentEditMode mMode;
     private EditText mNameTextView;
     private EditText mDescriptionEditText;
     private EditText mSortOrderEditText;
-    private Button mSaveButton;
     private OnSaveClicked mSaveListener = null;
 
     interface OnSaveClicked {
@@ -61,10 +60,10 @@ public class AddEditActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: starts");
         View view = inflater.inflate(R.layout.fragment_add_edit, container, false);
-        mNameTextView = (EditText) view.findViewById(R.id.addedit_name);
-        mDescriptionEditText = (EditText) view.findViewById(R.id.addedit_description);
-        mSortOrderEditText = (EditText) view.findViewById(R.id.addedit_sortorder);
-        mSaveButton = (Button) view.findViewById(R.id.addedit_save);
+        mNameTextView = view.findViewById(R.id.addedit_name);
+        mDescriptionEditText = view.findViewById(R.id.addedit_description);
+        mSortOrderEditText = view.findViewById(R.id.addedit_sortorder);
+        Button saveButton = view.findViewById(R.id.addedit_save);
 
 //        Bundle arguments = getActivity().getIntent().getExtras();
         Bundle arguments = getArguments();
@@ -89,7 +88,7 @@ public class AddEditActivityFragment extends Fragment {
             mMode = FragmentEditMode.ADD;
         }
 
-        mSaveButton.setOnClickListener(new View.OnClickListener() {
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Update the database if at least one field has changed.
@@ -105,18 +104,20 @@ public class AddEditActivityFragment extends Fragment {
 
                 switch (mMode) {
                     case EDIT:
-                        if (!mNameTextView.getText().toString().equals(task.getName())) {
+                        if (task != null && !mNameTextView.getText().toString().equals(task.getName())) {
                             contentValues.put(TasksContract.Columns.TASKS_NAME, mNameTextView.getText().toString());
                         }
-                        if (!mDescriptionEditText.getText().toString().equals(task.getDescription())) {
+                        if (task != null && !mDescriptionEditText.getText().toString().equals(task.getDescription())) {
                             contentValues.put(TasksContract.Columns.TASKS_DESCRIPTION, mDescriptionEditText.getText().toString());
                         }
-                        if (so != task.getSortOrder()) {
+                        if (task != null && so != task.getSortOrder()) {
                             contentValues.put(TasksContract.Columns.TASKS_SORT_ORDER, so);
                         }
                         if (contentValues.size() != 0) {
                             Log.d(TAG, "onClick: updating task");
-                            contentResolver.update(TasksContract.buildTaskUri(task.get_Id()), contentValues, null, null);
+                            if (task != null) {
+                                contentResolver.update(TasksContract.buildTaskUri(task.get_Id()), contentValues, null, null);
+                            }
                         }
                         break;
                     case ADD:
@@ -138,13 +139,5 @@ public class AddEditActivityFragment extends Fragment {
         });
         Log.d(TAG, "onCreateView: Exiting...");
         return view;
-    }
-
-    public EditText getNameTextView() {
-        return mNameTextView;
-    }
-
-    public EditText getDescriptionEditText() {
-        return mDescriptionEditText;
     }
 }
