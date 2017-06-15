@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 /**
  * Created by marco on 6/5/2017.
+ *
  */
 
 class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewAdapter.TaskViewHolder> {
@@ -23,7 +24,7 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
         void onDeleteClick(Task taks);
     }
 
-    public CursorRecyclerViewAdapter(Cursor cursor, OnTaskClickListerner listerner) {
+    CursorRecyclerViewAdapter(Cursor cursor, OnTaskClickListerner listerner) {
         mCursor = cursor;
         mListener = listerner;
     }
@@ -36,12 +37,12 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
         ImageButton editButton = null;
         ImageButton deleteButton = null;
 
-        public TaskViewHolder(View itemView) {
+        TaskViewHolder(View itemView) {
             super(itemView);
-            this.name = (TextView) itemView.findViewById(R.id.tli_name);
-            this.description = (TextView) itemView.findViewById(R.id.tli_description);
-            this.editButton = (ImageButton) itemView.findViewById(R.id.tli_edit);
-            this.deleteButton = (ImageButton) itemView.findViewById(R.id.tli_delete);
+            this.name = itemView.findViewById(R.id.tli_name);
+            this.description = itemView.findViewById(R.id.tli_description);
+            this.editButton = itemView.findViewById(R.id.tli_edit);
+            this.deleteButton = itemView.findViewById(R.id.tli_delete);
         }
     }
 
@@ -79,7 +80,6 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
                     switch (v.getId()) {
                         case R.id.tli_edit:
                             if (mListener != null) {
-
                                 mListener.onEditClick(task);
                             }
                             break;

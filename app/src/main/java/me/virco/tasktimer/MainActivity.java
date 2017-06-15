@@ -101,18 +101,6 @@ public class MainActivity extends AppCompatActivity
         mAlertDialog = builder.create();
         mAlertDialog.setCanceledOnTouchOutside(true);
 
-//        builder.setTitle(R.string.app_name);
-//        builder.setIcon(R.mipmap.ic_launcher);
-//        messageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d(TAG, "onClick: messageView.onClick, showing = " + mAlertDialog.isShowing());
-//                if (mAlertDialog != null && mAlertDialog.isShowing()) {
-//                    mAlertDialog.dismiss();
-//                }
-//            }
-//        });
-
         TextView textView = messageView.findViewById(R.id.about_version);
         textView.setText("v" + BuildConfig.VERSION_NAME);
 
@@ -135,30 +123,6 @@ public class MainActivity extends AppCompatActivity
 
         mAlertDialog.show();
     }
-//    @SuppressLint("SetTextI18n")
-//    public void showAboutDialog() {
-//        @SuppressLint("InflateParams") View messageView = getLayoutInflater().inflate(R.layout.about, null, false);
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle(R.string.app_name);
-//        builder.setIcon(R.mipmap.ic_launcher);
-//        builder.setView(messageView);
-//        mAlertDialog = builder.create();
-//        mAlertDialog.setCanceledOnTouchOutside(true);
-////        builder.setTitle(R.string.app_name);
-////        builder.setIcon(R.mipmap.ic_launcher);
-//        messageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d(TAG, "onClick: messageView.onClick, showing = " + mAlertDialog.isShowing());
-//                if (mAlertDialog != null && mAlertDialog.isShowing()) {
-//                    mAlertDialog.dismiss();
-//                }
-//            }
-//        });
-//        TextView textView = (TextView) messageView.findViewById(R.id.about_version);
-//        textView.setText("v" + BuildConfig.VERSION_NAME);
-//        mAlertDialog.show();
-//    }
 
     private void taskEditRequest(Task task) {
         Log.d(TAG, "taskEditRequest: starts");
